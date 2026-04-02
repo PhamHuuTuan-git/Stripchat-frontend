@@ -3,11 +3,13 @@
 import { Button, Badge } from "@heroui/react";
 import { Menu, Search, MessageSquare, Bell, Trophy, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toggleSidebar } from "../../../redux/slices/sidebar.slice";
+import { userSelector } from "@/redux/selector";
 
 export default function Header() {
     const dispatch = useDispatch();
+    const user = useSelector(userSelector);
     return (
         <header className="sticky top-0 z-50 w-full bg-[#18181b] border-b border-zinc-800">
             <div className="flex h-16 items-center px-4 justify-between gap-4">
@@ -70,9 +72,15 @@ export default function Header() {
                         Add Tokens
                     </Button>
 
-                    <button className="flex items-center justify-center h-8 w-8 rounded-full border border-zinc-700 hover:border-[#f23b75] bg-zinc-900 transition-colors">
-                        <span className="text-xs font-semibold text-white">A</span>
-                    </button>
+                    {
+                        !user ? (
+                            <Link href='/login'>Login</Link>
+                        ) : (
+                            <button className="flex items-center justify-center h-8 w-8 rounded-full border border-zinc-700 hover:border-[#f23b75] bg-zinc-900 transition-colors">
+                                <span className="text-xs font-semibold text-white">A</span>
+                            </button>
+                        )
+                    }
                 </div>
             </div>
 
