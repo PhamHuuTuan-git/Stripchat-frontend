@@ -2,12 +2,14 @@
 "use client";
 
 import React from "react";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { Provider } from "react-redux"
+import { store } from "@/redux/store";
+
 
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
-        <NextThemesProvider attribute="class" defaultTheme="light">
+        <Provider store={store}>
             {children}
-        </NextThemesProvider>
+        </Provider>
     );
 }

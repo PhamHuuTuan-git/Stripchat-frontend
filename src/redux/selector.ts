@@ -1,0 +1,1 @@
+export const sidebarSelectorMode = (state: { sidebar: { isOpen: boolean } }) => state.sidebar.isOpen;
