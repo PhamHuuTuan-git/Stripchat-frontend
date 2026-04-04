@@ -80,10 +80,10 @@ export default function Header() {
                             </span>
                             <span className="text-sm font-bold text-white group-hover:text-[#f23b75] transition-colors">8916 LIVE</span>
                         </div>
-                        <div className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors cursor-pointer">
+                        <Link href="/top" className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors cursor-pointer">
                             <Trophy size={18} />
                             <span className="text-sm font-semibold">Top Models</span>
-                        </div>
+                        </Link>
                     </div>
                 </div>
 
