@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Link } from "@heroui/react";
 import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import Logo from "@/components/ui/Logo";
 
 const loginSchema = z.object({
     email: z.string().min(1, { message: "Email is required" }).email({ message: "Invalid email address" }),
@@ -52,7 +53,7 @@ export default function Login() {
 
                 <div className="relative z-10 flex flex-col p-12 text-white max-w-xl left-0 absolute bottom-12">
                     <h2 className="text-4xl font-black mb-4 tracking-tighter">
-                        Welcome back to <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">Climara</span>
+                        Welcome back to <Logo withLink={false} variant="gradient" textSize="text-4xl" />
                     </h2>
                     <p className="text-zinc-400 text-lg">
                         Jump right back into the action. Log in to connect with your favorite broadcasters and the community.
@@ -62,10 +63,8 @@ export default function Login() {
 
             <div className="flex-1 flex flex-col items-center justify-center p-6 bg-zinc-950/50 backdrop-blur-xl relative z-10">
                 <div className="w-full max-w-sm flex flex-col gap-6">
-                    <div className="text-center mb-4">
-                        <h1 className="text-3xl font-black tracking-tight mb-2">
-                            Clim<span className="text-[#f23b75]">ara</span>
-                        </h1>
+                    <div className="text-center mb-4 flex flex-col items-center">
+                        <Logo textSize="text-3xl" className="mb-2" />
                         <p className="text-sm text-zinc-400">Log in to your account</p>
                     </div>
 

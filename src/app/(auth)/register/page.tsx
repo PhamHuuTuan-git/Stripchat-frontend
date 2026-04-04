@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Link } from "@heroui/react";
 import { Eye, EyeOff, User, Mail, Lock } from "lucide-react";
+import Logo from "@/components/ui/Logo";
 
 const registerSchema = z.object({
     username: z.string().min(3, { message: "Username must be at least 3 characters" }).max(20, { message: "Username must be at most 20 characters" }),
@@ -54,7 +55,7 @@ export default function Register() {
 
                 <div className="relative z-10 flex flex-col p-12 text-white max-w-xl left-0 absolute bottom-12">
                     <h2 className="text-4xl font-black mb-4 tracking-tighter">
-                        Join the <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">Climara</span> Experience
+                        Join the <Logo withLink={false} variant="gradient" textSize="text-4xl" /> Experience
                     </h2>
                     <p className="text-zinc-400 text-lg">
                         Connect with millions of users. Create your account to start interacting with your favorite broadcasters instantly.
@@ -64,10 +65,8 @@ export default function Register() {
 
             <div className="flex-1 flex flex-col items-center justify-center p-6 bg-zinc-950/50 backdrop-blur-xl relative z-10">
                 <div className="w-full max-w-sm flex flex-col gap-6">
-                    <div className="text-center mb-4">
-                        <h1 className="text-3xl font-black tracking-tight mb-2">
-                            Clim<span className="text-[#f23b75]">ara</span>
-                        </h1>
+                    <div className="text-center mb-4 flex flex-col items-center">
+                        <Logo textSize="text-3xl" className="mb-2" />
                         <p className="text-sm text-zinc-400">Create an account to get started</p>
                     </div>
 

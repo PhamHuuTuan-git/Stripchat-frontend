@@ -1,12 +1,13 @@
 "use client";
 
-import { Button, Badge } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { Menu, Search, MessageSquare, Bell, Trophy, Sparkles, User, Heart, Users, LogOut } from "lucide-react";
 import Link from "next/link";
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleSidebar } from "../../../redux/slices/sidebar.slice";
 import { userSelector } from "@/redux/selector";
 import { useState, useRef, useEffect } from "react";
+import Logo from "@/components/ui/Logo";
 
 export default function Header() {
     const dispatch = useDispatch();
@@ -66,11 +67,7 @@ export default function Header() {
                         <Menu size={24} />
                     </button>
 
-                    <Link href="/" className="flex items-center gap-1">
-                        <div className="text-2xl font-black tracking-tight text-white flex items-center">
-                            Clim<span className="text-[#f23b75]">ara</span>
-                        </div>
-                    </Link>
+                    <Logo />
 
                     <div className="hidden md:flex items-center gap-6 ml-4">
                         <div className="flex items-center gap-2 cursor-pointer group">
