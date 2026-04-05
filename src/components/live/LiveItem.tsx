@@ -24,7 +24,7 @@ export default function LiveItem({
     flag
 }: LiveItemProps) {
     return (
-        <Link href={`/${username}`} className="block group relative aspect-[16/10] overflow-hidden rounded-md bg-zinc-900 cursor-pointer shadow-lg transition-transform duration-300 hover:scale-[1.02] hover:z-10">
+        <Link href={`/${username}`} className="block group relative aspect-[16/10] overflow-hidden rounded-md bg-zinc-900 cursor-pointer shadow-lg transition-transform duration-300 hover:z-10">
             {/* Thumbnail */}
             <Image
                 src={thumbnail}
