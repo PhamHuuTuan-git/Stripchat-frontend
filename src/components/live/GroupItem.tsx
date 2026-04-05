@@ -31,20 +31,32 @@ export default function GroupItem({
 }: GroupItemProps) {
     const scrollRef = useRef<HTMLDivElement>(null);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
-    const [canScrollRight, setCanScrollRight] = useState(true);
+    const [canScrollRight, setCanScrollRight] = useState(false);
 
     const checkScroll = () => {
         if (scrollRef.current) {
             const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
             setCanScrollLeft(scrollLeft > 0);
-            setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+            setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 1);
         }
     };
 
     useEffect(() => {
+        if (!scrollRef.current) return;
+
+        const observer = new ResizeObserver(() => {
+            checkScroll();
+        });
+
+        observer.observe(scrollRef.current);
+
         checkScroll();
-        window.addEventListener("resize", checkScroll);
-        return () => window.removeEventListener("resize", checkScroll);
+        const timer = setTimeout(checkScroll, 100);
+
+        return () => {
+            observer.disconnect();
+            clearTimeout(timer);
+        };
     }, [streams]);
 
     const scroll = (direction: "left" | "right") => {
@@ -58,7 +70,6 @@ export default function GroupItem({
 
     return (
         <section className="py-6 flex flex-col group/section">
-            {/* Header: Title and See All */}
             <div className="flex items-center justify-between mb-4 px-1 md:px-0">
                 <div className="flex items-center gap-3">
                     {flag && <span className="text-xl md:text-2xl leading-none">{flag}</span>}
@@ -73,9 +84,7 @@ export default function GroupItem({
                 </Link>
             </div>
 
-            {/* Scroll Container with Arrows */}
             <div className="relative">
-                {/* Scroll Left Button */}
                 {canScrollLeft && (
                     <button
                         onClick={() => scroll("left")}
@@ -86,7 +95,6 @@ export default function GroupItem({
                     </button>
                 )}
 
-                {/* Main Content Area */}
                 <div
                     ref={scrollRef}
                     onScroll={checkScroll}
@@ -108,7 +116,6 @@ export default function GroupItem({
                     ))}
                 </div>
 
-                {/* Scroll Right Button */}
                 {canScrollRight && (
                     <button
                         onClick={() => scroll("right")}

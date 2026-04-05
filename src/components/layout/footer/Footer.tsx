@@ -23,7 +23,6 @@ export default function Footer() {
         <footer className="w-full bg-[#0a0a0c] border-t border-zinc-800 py-12 px-6">
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-12">
 
-                {/* Brand / Left Section */}
                 <div className="flex flex-col gap-6 max-w-sm">
                     <Link href="/" className="flex items-center gap-1">
                         <div className="text-2xl font-black tracking-tight text-white flex items-center">
@@ -43,7 +42,6 @@ export default function Footer() {
                     </div>
                 </div>
 
-                {/* Links Section */}
                 <div className="flex gap-16 flex-wrap">
                     <div className="flex flex-col gap-4">
                         <h4 className="text-sm font-bold text-white uppercase tracking-wider">Company</h4>
