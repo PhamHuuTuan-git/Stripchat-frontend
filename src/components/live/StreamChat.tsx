@@ -18,7 +18,7 @@ export default function StreamChat({ streamId, isOverlay = false }: StreamChatPr
     };
 
     return (
-        <div className={`flex flex-col ${isOverlay ? "h-[450px] w-[350px] bg-black/20 backdrop-blur-3xl rounded-2xl border border-white/10" : "h-full bg-black/20 border border-zinc-800/50 rounded-xl"} overflow-hidden flex-shrink-0 transition-all duration-300`}>
+        <div className={`flex flex-col ${isOverlay ? "h-full w-[350px] bg-black/20 border border-white/10" : "h-full bg-black/20 border border-zinc-800/50 rounded-xl"} overflow-hidden flex-shrink-0 transition-all duration-300`}>
             <div className={`p-4 border-b ${isOverlay ? "border-white/10 bg-white/5" : "border-zinc-800 bg-zinc-900/40"} flex items-center justify-between`}>
                 <span className={`text-xs font-black uppercase tracking-[0.2em] ${isOverlay ? "text-white/70" : "text-zinc-400"}`}>Stream Chat</span>
                 <div className={`text-[10px] font-bold ${isOverlay ? "text-white/40 bg-white/10" : "text-zinc-500 bg-zinc-800/50"} px-2 py-0.5 rounded uppercase`}>Connected</div>
