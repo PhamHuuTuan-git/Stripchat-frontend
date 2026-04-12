@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Heart, Coins, Maximize, Minimize, Eye, EyeOff, Send, Smartphone } from "lucide-react";
 import Image from "next/image";
-import { Button, Modal, Input, Label, useOverlayState, ProgressBar } from "@heroui/react";
+import { Button, Modal, Input, Label, useOverlayState } from "@heroui/react";
 import StreamChat from "@/components/live/StreamChat";
 
 export default function StreamPage() {
@@ -25,7 +25,7 @@ export default function StreamPage() {
 
     return (
         <div className={`flex flex-col lg:flex-row gap-6 ${isFullScreen ? "fixed inset-0 z-[9999] bg-black gap-0" : ""}`}>
-            <div className={`flex-grow flex flex-col gap-4 ${isFullScreen ? "h-full w-full gap-0 rounded-none overflow-hidden" : ""}`}>
+            <div className={`flex-grow flex flex-col gap-4 flex-[2] ${isFullScreen ? "h-full w-full gap-0 rounded-none overflow-hidden" : ""}`}>
                 <div className={`relative aspect-video bg-black ${isFullScreen ? "h-full w-full aspect-auto rounded-none border-none" : "rounded-xl overflow-hidden group shadow-2xl border border-zinc-800/50"}`}>
                     <div className="absolute inset-0 bg-zinc-900">
                         <Image
@@ -36,7 +36,7 @@ export default function StreamPage() {
                         />
                     </div>
 
-                    <div className="absolute top-4 left-4 z-10 flex items-center gap-2">
+                    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2">
                         <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#f23b75] rounded text-[11px] font-bold uppercase tracking-wider text-white shadow-[0_0_15px_rgba(242,59,117,0.4)]">
                             <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                             Live
@@ -69,7 +69,7 @@ export default function StreamPage() {
                     </div>
 
                     {isFullScreen && showChatOverlay && (
-                        <div className="absolute bottom-6 left-6 z-30 transition-all animate-in fade-in slide-in-from-left-4 duration-500">
+                        <div className="absolute bottom-0 top-0 left-0 z-30 transition-all animate-in fade-in slide-in-from-left-4 duration-500">
                             <StreamChat streamId="current-stream" isOverlay={true} />
                         </div>
                     )}
@@ -104,7 +104,7 @@ export default function StreamPage() {
                                 <Button
                                     className="bg-[#f23b75] text-white font-black uppercase text-xs tracking-[0.2em] px-10 h-14 shadow-[0_8px_30px_rgba(242,59,117,0.3)] hover:translate-y-[-2px] transition-all"
                                 >
-                                    Follow
+                                    Private show
                                 </Button>
 
                                 <Modal.Root state={tipState}>
@@ -214,7 +214,7 @@ export default function StreamPage() {
             </div>
 
             {!isFullScreen && (
-                <div className="w-full lg:w-[400px] h-[800px] flex-shrink-0">
+                <div className="w-full lg:flex-[1] h-[600px] flex-shrink-0">
                     <StreamChat streamId="current-stream" />
                 </div>
             )}
