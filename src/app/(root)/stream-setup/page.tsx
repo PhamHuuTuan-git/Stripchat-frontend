@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
     VideoOff,
-    Settings,
     ChevronDown,
     Star,
     Monitor,
@@ -12,7 +11,6 @@ import {
     Edit2,
     Play,
     Zap,
-    Layout,
     Copy,
     Check,
     Loader2,
@@ -33,7 +31,7 @@ export default function StreamSetupPage() {
     const [category, setCategory] = useState("cinematic");
     const [tags, setTags] = useState("");
     const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-    
+
     // Modals
     const startStreamModal = useOverlayState();
     const obsModal = useOverlayState();
@@ -50,11 +48,23 @@ export default function StreamSetupPage() {
     const [audioLevel, setAudioLevel] = useState(0);
     const videoRef = useRef<HTMLVideoElement>(null);
     const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+    const audioContextRef = useRef<AudioContext | null>(null);
+    const analyserRef = useRef<AnalyserNode | null>(null);
+    const animationFrameRef = useRef<number | null>(null);
 
     // Goal States
     const [goalTokens, setGoalTokens] = useState(10000);
     const [goalTitle, setGoalTitle] = useState("Special Performance Unlock");
     const [goalDescription, setGoalDescription] = useState("");
+
+    // Sync mute state with stream
+    useEffect(() => {
+        if (cameraStream) {
+            cameraStream.getAudioTracks().forEach(track => {
+                track.enabled = !isMuted;
+            });
+        }
+    }, [isMuted, cameraStream]);
 
     const categories = [
         { id: "cinematic", label: "Cinematic Performance" },
@@ -71,7 +81,7 @@ export default function StreamSetupPage() {
         obsModal.open();
         setIsGenerating(true);
         setObsInfo(null);
-        
+
         setTimeout(() => {
             setObsInfo({
                 streamKey: "live_482910394_xY2k9Pz5Wq8N1m7V",
@@ -92,21 +102,63 @@ export default function StreamSetupPage() {
             if (videoRef.current) {
                 videoRef.current.srcObject = stream;
             }
-            
-            // Audio Level Simulation
-            const interval = setInterval(() => {
-                setAudioLevel(Math.random() * 100);
-            }, 100);
-            (window as any)._audioInterval = interval;
+
+            // Real Audio Level Analysis
+            const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+            const analyser = audioContext.createAnalyser();
+            const source = audioContext.createMediaStreamSource(stream);
+            source.connect(analyser);
+            analyser.fftSize = 256;
+
+            audioContextRef.current = audioContext;
+            analyserRef.current = analyser;
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            const updateAudioLevel = () => {
+                if (!analyserRef.current) return;
+
+                analyserRef.current.getByteFrequencyData(dataArray);
+
+                let sum = 0;
+                for (let i = 0; i < bufferLength; i++) {
+                    sum += dataArray[i];
+                }
+                const average = sum / bufferLength;
+
+                // Scale the average value to 0-100 range
+                // Usually the values are between 0-255, but we want it to be responsive
+                const level = Math.min(100, Math.pow(average / 128, 0.5) * 100);
+                setAudioLevel(level);
+
+                animationFrameRef.current = requestAnimationFrame(updateAudioLevel);
+            };
+
+            updateAudioLevel();
         } catch (err) {
             console.error("Camera access denied", err);
         }
     };
 
     const stopWebRTC = () => {
-        cameraStream?.getTracks().forEach(track => track.stop());
+        if (cameraStream) {
+            cameraStream.getTracks().forEach(track => track.stop());
+        }
         setCameraStream(null);
-        if ((window as any)._audioInterval) clearInterval((window as any)._audioInterval);
+
+        if (animationFrameRef.current) {
+            cancelAnimationFrame(animationFrameRef.current);
+            animationFrameRef.current = null;
+        }
+
+        if (audioContextRef.current) {
+            audioContextRef.current.close();
+            audioContextRef.current = null;
+        }
+
+        analyserRef.current = null;
+        setAudioLevel(0);
         webrtcModal.close();
     };
 
@@ -137,7 +189,7 @@ export default function StreamSetupPage() {
                             Start Stream
                         </Button>
                     </Modal.Trigger>
-                    
+
                     <Modal.Backdrop className="bg-black/60 backdrop-blur-md z-[60] flex items-center justify-center p-4 transition-all animate-in fade-in duration-300">
                         <Modal.Container className="w-full max-w-3xl overflow-hidden animate-in zoom-in-95 duration-200">
                             <Modal.Dialog className="bg-[#0f0f12] border border-zinc-800 shadow-[0_0_50px_rgba(0,0,0,0.5)] rounded-2xl w-full overflow-hidden">
@@ -217,8 +269,8 @@ export default function StreamSetupPage() {
                                                 <div key={field.key} className="space-y-2">
                                                     <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500 ml-1">{field.label}</label>
                                                     <div className="relative group">
-                                                        <Input 
-                                                            readOnly 
+                                                        <Input
+                                                            readOnly
                                                             value={field.value}
                                                             type={field.secret ? "password" : "text"}
                                                             className="w-full h-14 bg-black border border-zinc-800 rounded-xl px-4 text-zinc-200 font-mono text-sm pr-12 focus-within:border-[#f23b75] transition-colors"
@@ -238,7 +290,7 @@ export default function StreamSetupPage() {
                                     )}
                                 </Modal.Body>
                                 <Modal.Footer className="p-8 border-t border-zinc-900 bg-zinc-900/20">
-                                    <Button 
+                                    <Button
                                         className="w-full h-14 bg-[#f23b75] hover:bg-[#ff4d85] font-black uppercase tracking-widest rounded-xl text-sm border-none"
                                         onPress={() => obsModal.close()}
                                     >
@@ -255,15 +307,15 @@ export default function StreamSetupPage() {
                 <Modal.Root state={webrtcModal}>
                     <Modal.Backdrop className="bg-black/60 backdrop-blur-md z-[70] flex items-center justify-center p-4">
                         <Modal.Container className="w-[90vw] max-w-[1280px] overflow-hidden animate-in zoom-in-95 duration-200">
-                            <Modal.Dialog className="bg-zinc-950 border border-zinc-800 shadow-2xl rounded-3xl w-full relative">
-                                <div className="grid grid-cols-1 md:grid-cols-2">
+                            <Modal.Dialog className="max-w-none bg-zinc-950 border border-zinc-800 shadow-2xl rounded-3xl w-full relative">
+                                <div className="w-full max-w-none grid grid-cols-1 md:grid-cols-2">
                                     {/* Preview Side */}
                                     <div className="relative aspect-video lg:aspect-square bg-black rounded-l-3xl overflow-hidden border-r border-zinc-900">
-                                        <video 
-                                            ref={videoRef} 
-                                            autoPlay 
-                                            muted 
-                                            playsInline 
+                                        <video
+                                            ref={videoRef}
+                                            autoPlay
+                                            muted
+                                            playsInline
                                             className="w-full h-full object-cover scale-x-[-1]"
                                         />
                                         <div className="absolute top-6 left-6 px-4 py-2 bg-black/60 backdrop-blur-md rounded-full border border-white/10 flex items-center gap-2">
@@ -304,9 +356,9 @@ export default function StreamSetupPage() {
                                                 <div className="space-y-3">
                                                     <div className="flex justify-between items-center px-1">
                                                         <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Audio Level</label>
-                                                        <Button 
-                                                            isIconOnly 
-                                                            variant="ghost" 
+                                                        <Button
+                                                            isIconOnly
+                                                            variant="ghost"
                                                             onPress={() => setIsMuted(!isMuted)}
                                                             className={`h-8 w-8 bg-transparent border-none ${isMuted ? "text-[#f23b75]" : "text-zinc-500"}`}
                                                         >
@@ -314,7 +366,7 @@ export default function StreamSetupPage() {
                                                         </Button>
                                                     </div>
                                                     <div className="h-2 w-full bg-zinc-900 rounded-full overflow-hidden border border-white/5">
-                                                        <div 
+                                                        <div
                                                             className={`h-full transition-all duration-100 ${isMuted ? "bg-zinc-800" : "bg-gradient-to-r from-blue-500 via-[#f23b75] to-green-500"}`}
                                                             style={{ width: `${isMuted ? 0 : audioLevel}%` }}
                                                         />
@@ -324,14 +376,14 @@ export default function StreamSetupPage() {
                                         </div>
 
                                         <div className="flex flex-col gap-3 mt-10">
-                                            <Button 
+                                            <Button
                                                 className="w-full h-14 bg-[#f23b75] hover:bg-[#ff4d85] text-white font-black uppercase tracking-widest rounded-2xl shadow-xl transition-all border-none"
                                                 onPress={() => { console.log("LIVE STARTED"); stopWebRTC(); }}
                                             >
                                                 Start Live Now
                                             </Button>
-                                            <Button 
-                                                variant="ghost" 
+                                            <Button
+                                                variant="ghost"
                                                 className="w-full h-12 text-zinc-500 font-black uppercase tracking-widest hover:text-white bg-transparent border-none"
                                                 onPress={stopWebRTC}
                                             >
@@ -364,7 +416,7 @@ export default function StreamSetupPage() {
                         </div>
                     </div>
                 </div>
-                
+
                 <div className="xl:col-span-4 space-y-6">
                     <Card className="bg-zinc-900/50 border-zinc-800/50 backdrop-blur-md p-6 rounded-[2rem]">
                         <div className="flex items-center gap-3 mb-6">
