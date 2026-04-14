@@ -1,14 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Send } from "lucide-react";
+import { StreamChatProps } from "../types";
 
-interface StreamChatProps {
-    streamId: string;
-    isOverlay?: boolean;
-}
-
-export default function StreamChat({ streamId, isOverlay = false }: StreamChatProps) {
+function StreamChat({ streamId, isOverlay = false }: StreamChatProps) {
     const [message, setMessage] = useState("");
 
     const handleSendMessage = () => {
@@ -65,3 +61,5 @@ export default function StreamChat({ streamId, isOverlay = false }: StreamChatPr
         </div>
     );
 }
+
+export default memo(StreamChat);
