@@ -45,11 +45,10 @@ function ControlBar({ muteCam, muteMic, shareScreen, endCall }: ControlBarProps)
                     <Button
                         isIconOnly
                         onPress={handleMuteMic}
-                        className={`h-14 w-14 rounded-2xl transition-all ${isMuted ? "bg-zinc-800 text-zinc-400" : "bg-white/5 text-white hover:bg-white/10"}`}
+                        className={`w-14 rounded-2xl transition-all ${isMuted ? "bg-zinc-800 text-zinc-400" : "bg-white/5 text-white hover:bg-white/10"}`}
                     >
                         {isMuted ? <MicOff size={22} /> : <Mic size={22} />}
                     </Button>
-                    <span className="text-[8px] font-black uppercase tracking-widest text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity">Mute</span>
                 </div>
             </div>
 
@@ -58,11 +57,10 @@ function ControlBar({ muteCam, muteMic, shareScreen, endCall }: ControlBarProps)
                     <Button
                         isIconOnly
                         onPress={handleMuteCam}
-                        className={`h-14 w-14 rounded-2xl transition-all ${isCamOff ? "bg-zinc-800 text-zinc-400" : "bg-white/5 text-white hover:bg-white/10"}`}
+                        className={` w-14 rounded-2xl transition-all ${isCamOff ? "bg-zinc-800 text-zinc-400" : "bg-white/5 text-white hover:bg-white/10"}`}
                     >
                         {isCamOff ? <VideoOff size={22} /> : <Video size={22} />}
                     </Button>
-                    <span className="text-[8px] font-black uppercase tracking-widest text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity">Cam</span>
                 </div>
             </div>
 
@@ -71,11 +69,10 @@ function ControlBar({ muteCam, muteMic, shareScreen, endCall }: ControlBarProps)
                     <Button
                         isIconOnly
                         onPress={handleShareScreen}
-                        className="h-14 w-14 rounded-2xl bg-white/5 text-white hover:bg-white/10 transition-all font-bold"
+                        className="w-14 rounded-2xl bg-white/5 text-white hover:bg-white/10 transition-all font-bold"
                     >
                         <Share2 size={22} />
                     </Button>
-                    <span className="text-[8px] font-black uppercase tracking-widest text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity">Share</span>
                 </div>
             </div>
 
